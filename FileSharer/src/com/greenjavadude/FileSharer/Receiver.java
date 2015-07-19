@@ -13,7 +13,6 @@ public class Receiver {
 	public Receiver(){
 		try{
 			server = new ServerSocket(PORT, 1);
-			
 		}catch(IOException e){
 			
 		}
