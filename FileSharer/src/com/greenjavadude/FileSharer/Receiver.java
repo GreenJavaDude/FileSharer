@@ -3,48 +3,50 @@ package com.greenjavadude.FileSharer;
 import java.io.*;
 import java.net.*;
 
-public class Receiver {
+public class Receiver implements Runnable{
 	public static final int PORT = 8787;
 	
-	private Socket socket;
-	private ObjectInputStream input;
 	private ServerSocket server;
+	private Socket socket;
 	
-	public Receiver(){
+	private boolean success;
+	private File file;
+	
+	public Receiver(File file){
+		success = false;
+		this.file = file;
 		try{
-			server = new ServerSocket(PORT, 1);
+			server = new ServerSocket(PORT, 10);
+			new Thread(this).start();
 		}catch(IOException e){
 			
 		}
 	}
 	
-	public File getObject(){
-		File file = null;
+	public void run(){
 		try{
 			socket = server.accept();
-			input = (ObjectInputStream) socket.getInputStream();
-			file = (File) input.readObject();
+			byte[] bytes = new byte[1024];
+		    InputStream is = socket.getInputStream();
+		    FileOutputStream fos = new FileOutputStream(file);
+		    BufferedOutputStream bos = new BufferedOutputStream(fos);
+		    int bytesread = 0;
+			try{
+				while((bytesread = is.read(bytes, 0, bytes.length)) != 0){
+					bos.write(bytes, 0, bytesread);
+				}
+				success = true;
+			}finally{
+				bos.close();
+				is.close();
+				socket.close();
+			}
 		}catch(IOException e){
 			
-		}catch(ClassNotFoundException e){
-			
 		}
-		return file;
 	}
 	
-	public boolean saveFile(File f){
-		boolean worked = false;
-		try{
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/user/home/Desktop/Download/"+f.getName()));
-			try{
-				oos.writeObject(f);
-				worked = true;
-			}finally{
-				oos.close();
-			}
-		}catch(Exception e){
-			
-		}
-		return worked;
+	public boolean isFinished(){
+		return success;
 	}
 }

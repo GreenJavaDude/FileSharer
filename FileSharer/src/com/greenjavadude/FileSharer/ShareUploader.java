@@ -6,42 +6,41 @@ import java.net.*;
 public class ShareUploader{
 	public static final int PORT = 8787;
 	
-	private File saveObj;
 	private Socket socket;
-	private ObjectOutputStream output;
+	private String ip;
+	private File file;
 	
-	private boolean startup;
-	
-	public ShareUploader(File file, String ip){
-		saveObj = file;
-		try{
-			socket = new Socket(InetAddress.getByName(ip), PORT);
-			output = (ObjectOutputStream) socket.getOutputStream();
-			startup = true;
-		}catch(Exception e){
-			startup = false;
-		}
+	public ShareUploader(String ip, File file){
+		this.ip = ip;
+		this.file = file;
 	}
 	
-	public boolean upload(){
-		if(startup){
+	public void upload(){
+		try{
+			BufferedInputStream bis = null;
+			OutputStream os = null;
 			try{
-				output.writeObject(saveObj);
-				return true;
-			}catch(IOException e){
-				e.printStackTrace();
+				socket = new Socket(InetAddress.getByName(ip), PORT);
+				byte[] size = new byte[1024];
+				bis = new BufferedInputStream(new FileInputStream(file));
+				os = socket.getOutputStream();
+				
+				while(true){
+					if(bis.read(size, 0, size.length) != -1){
+						os.write(size, 0, size.length);
+					}else{
+						break;
+					}
+				}
+			    
+			    os.flush();
+			}finally{
+				bis.close();
+			    os.close();
+				socket.close();
 			}
+		}catch(IOException e){
+			
 		}
-		return false;
 	}
 }
-
-
-
-
-
-
-
-
-
-

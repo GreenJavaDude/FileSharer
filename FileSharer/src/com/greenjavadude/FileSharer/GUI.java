@@ -32,7 +32,7 @@ public class GUI extends JFrame{
 		setLocationRelativeTo(null);
 		
 		
-		
+		fileChooser = new JFileChooser();
 		
 		box = new JComboBox<String>(list);
 		box.setSelectedIndex(0);
@@ -76,18 +76,9 @@ public class GUI extends JFrame{
 				
 				if(returnVal == JFileChooser.APPROVE_OPTION){
 					file = fileChooser.getSelectedFile();
-					
-					switch(mode){
-					case RECEIVER:
-						//dostuff
-						break;
-					case SENDER:
-						//dostuff
-						break;
-					}
+					//dostuff
+					pathy.setText(file.getAbsolutePath());
 				}
-				
-				
 			}
 		});
 		
