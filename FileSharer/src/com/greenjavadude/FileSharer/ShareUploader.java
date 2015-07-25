@@ -40,7 +40,9 @@ public class ShareUploader{
 				socket.close();
 			}
 		}catch(IOException e){
-			
+			System.out.println("IO ERROR: Upload");
+		}catch(NullPointerException e){
+			System.out.println("Null ERROR: Upload");
 		}
 	}
 }

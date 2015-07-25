@@ -42,7 +42,7 @@ public class Receiver implements Runnable{
 				socket.close();
 			}
 		}catch(IOException e){
-			
+			System.out.println("ERROR: Receiver");
 		}
 	}
 	
