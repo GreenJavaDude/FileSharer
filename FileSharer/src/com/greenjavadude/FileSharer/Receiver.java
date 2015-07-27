@@ -9,11 +9,9 @@ public class Receiver implements Runnable{
 	private ServerSocket server;
 	private Socket socket;
 	
-	private boolean success;
 	private File file;
 	
 	public Receiver(File file){
-		success = false;
 		this.file = file;
 		try{
 			server = new ServerSocket(PORT, 10);
@@ -23,30 +21,33 @@ public class Receiver implements Runnable{
 		}
 	}
 	
+	public void start(){
+		new Thread(this).start();
+	}
+	
 	public void run(){
 		try{
 			socket = server.accept();
-			byte[] bytes = new byte[1024];
+			byte[] buffer = new byte[2048];
 		    InputStream is = socket.getInputStream();
-		    FileOutputStream fos = new FileOutputStream(file);
-		    BufferedOutputStream bos = new BufferedOutputStream(fos);
-		    int bytesread = 0;
+		    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
 			try{
-				while((bytesread = is.read(bytes, 0, bytes.length)) != 0){
-					bos.write(bytes, 0, bytesread);
+				int bytesread = 0;
+				
+				while((bytesread = is.read(buffer, 0, buffer.length)) != 0){
+					bos.write(buffer, 0, bytesread);
 				}
-				success = true;
+				System.out.println("Receiver finished!");
+				bos.flush();
 			}finally{
 				bos.close();
 				is.close();
 				socket.close();
 			}
 		}catch(IOException e){
-			System.out.println("ERROR: Receiver");
+			System.out.println("IO ERROR: Receiver");
+		}catch(ArrayIndexOutOfBoundsException e){
+			System.out.println("ArrayOutOfBoundsException ERROR: Receiver");
 		}
-	}
-	
-	public boolean isFinished(){
-		return success;
 	}
 }

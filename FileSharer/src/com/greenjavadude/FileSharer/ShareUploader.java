@@ -21,16 +21,13 @@ public class ShareUploader{
 			OutputStream os = null;
 			try{
 				socket = new Socket(InetAddress.getByName(ip), PORT);
-				byte[] size = new byte[1024];
+				byte[] buffer = new byte[2048];
 				bis = new BufferedInputStream(new FileInputStream(file));
 				os = socket.getOutputStream();
+				int bytesread = 0;
 				
-				while(true){
-					if(bis.read(size, 0, size.length) != -1){
-						os.write(size, 0, size.length);
-					}else{
-						break;
-					}
+				while((bytesread = bis.read(buffer, 0, buffer.length)) != -1){
+					os.write(buffer, 0, bytesread);
 				}
 			    
 			    os.flush();
@@ -43,6 +40,8 @@ public class ShareUploader{
 			System.out.println("IO ERROR: Upload");
 		}catch(NullPointerException e){
 			System.out.println("Null ERROR: Upload");
+		}catch(ArrayIndexOutOfBoundsException e){
+			System.out.println("ArrayIndexOutOfBoundsException ERROR: Upload");
 		}
 	}
 }
