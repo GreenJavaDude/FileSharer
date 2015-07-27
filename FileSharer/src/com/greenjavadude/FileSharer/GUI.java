@@ -21,10 +21,11 @@ public class GUI extends JFrame{
 	private JComboBox<String> box;
 	private JButton selectFile;
 	private JTextField pathy;
+	private JButton start;
 	
 	private JFileChooser fileChooser;
 	
-	
+	private File file;
 	
 	public GUI(){
 		setTitle("File Sharer");
@@ -41,44 +42,60 @@ public class GUI extends JFrame{
 				String selected = (String) box.getSelectedItem();
 				if(selected.equals("Receive")){
 					mode = Mode.RECEIVER;
+					add(BorderLayout.CENTER, start);
 					if(choose.isAncestorOf(selectFile)){
 						choose.remove(selectFile);
 						choose.remove(pathy);
-						setVisible(true);
 					}
+					setVisible(true);
 				}else if(selected.equals("Send")){
 					mode = Mode.SENDER;
+					if(isAncestorOf(start) && file.equals(null)){
+						remove(start);
+					}
 					if(!choose.isAncestorOf(selectFile)){
 						choose.add(selectFile);
 						choose.add(pathy);
-						setVisible(true);
 					}
-				}else{
+					setVisible(true);
+				}else if(selected.equals("Choose to receive or send")){
 					mode = null;
+					if(isAncestorOf(start)){
+						remove(start);
+						System.out.println("Removed start");
+					}
 					if(choose.isAncestorOf(selectFile)){
 						choose.remove(selectFile);
 						choose.remove(pathy);
-						setVisible(true);
 					}
+					setVisible(true);
 				}
 			}
 		});
 		
-		pathy = new JTextField();
+		start = new JButton("Start");
+		start.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				//start
+			}
+		});
+		
+		pathy = new JTextField("");
 		pathy.setEditable(false);
 		
 		selectFile = new JButton("Select File");
 		selectFile.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				File file = null;
-				
 				int returnVal = fileChooser.showOpenDialog(GUI.this);
 				
 				if(returnVal == JFileChooser.APPROVE_OPTION){
 					file = fileChooser.getSelectedFile();
 					//dostuff
+					System.out.println(file.getAbsolutePath());
 					pathy.setText(file.getAbsolutePath());
+					add(BorderLayout.CENTER, start);
 				}
+				setVisible(true);
 			}
 		});
 		
