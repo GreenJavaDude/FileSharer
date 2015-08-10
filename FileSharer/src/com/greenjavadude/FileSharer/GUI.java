@@ -13,9 +13,8 @@ public class GUI extends JFrame{
 	private static final long serialVersionUID = -4746261571872333721L;
 	private static final String[] list = {"Choose to receive or send", "Receive", "Send"};
 	
-	private Mode mode;
 	private Receiver receiver;
-	private ShareUploader uploader;
+	private Uploader uploader;
 	
 	private JPanel choose;
 	private JComboBox<String> box;
@@ -41,7 +40,6 @@ public class GUI extends JFrame{
 			public void actionPerformed(ActionEvent e){
 				String selected = (String) box.getSelectedItem();
 				if(selected.equals("Receive")){
-					mode = Mode.RECEIVER;
 					add(BorderLayout.CENTER, start);
 					if(choose.isAncestorOf(selectFile)){
 						choose.remove(selectFile);
@@ -49,7 +47,7 @@ public class GUI extends JFrame{
 					}
 					setVisible(true);
 				}else if(selected.equals("Send")){
-					mode = Mode.SENDER;
+					add(BorderLayout.CENTER, start);
 					if(isAncestorOf(start) && file.equals(null)){
 						remove(start);
 					}
@@ -59,10 +57,8 @@ public class GUI extends JFrame{
 					}
 					setVisible(true);
 				}else if(selected.equals("Choose to receive or send")){
-					mode = null;
 					if(isAncestorOf(start)){
 						remove(start);
-						System.out.println("Removed start");
 					}
 					if(choose.isAncestorOf(selectFile)){
 						choose.remove(selectFile);

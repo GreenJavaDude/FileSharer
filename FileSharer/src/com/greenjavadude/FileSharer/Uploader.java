@@ -3,16 +3,23 @@ package com.greenjavadude.FileSharer;
 import java.io.*;
 import java.net.*;
 
-public class ShareUploader{
+public class Uploader{
 	public static final int PORT = 8787;
 	
 	private Socket socket;
 	private String ip;
 	private File file;
 	
-	public ShareUploader(String ip, File file){
+	private boolean finished;
+	
+	public Uploader(String ip, File file){
 		this.ip = ip;
 		this.file = file;
+		finished = false;
+	}
+	
+	public boolean isFinished(){
+		return finished;
 	}
 	
 	public void upload(){
@@ -35,13 +42,14 @@ public class ShareUploader{
 				bis.close();
 			    os.close();
 				socket.close();
+				finished = true;
 			}
 		}catch(IOException e){
 			System.out.println("IO ERROR: Upload");
 		}catch(NullPointerException e){
 			System.out.println("Null ERROR: Upload");
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("ArrayIndexOutOfBoundsException ERROR: Upload");
+			//finished
 		}
 	}
 }

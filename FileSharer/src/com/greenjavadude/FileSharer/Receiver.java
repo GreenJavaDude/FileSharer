@@ -11,9 +11,15 @@ public class Receiver implements Runnable{
 	
 	private File file;
 	
+	private boolean finished;
+	
 	public Receiver(File file){
 		this.file = file;
-		try{
+		finished = false;
+	}
+	
+	public void start(){
+		try {
 			server = new ServerSocket(PORT, 10);
 			new Thread(this).start();
 		}catch(IOException e){
@@ -21,8 +27,8 @@ public class Receiver implements Runnable{
 		}
 	}
 	
-	public void start(){
-		new Thread(this).start();
+	public boolean isFinished(){
+		return finished;
 	}
 	
 	public void run(){
@@ -43,11 +49,12 @@ public class Receiver implements Runnable{
 				bos.close();
 				is.close();
 				socket.close();
+				finished = true;
 			}
 		}catch(IOException e){
 			System.out.println("IO ERROR: Receiver");
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("ArrayOutOfBoundsException ERROR: Receiver");
+			//finished
 		}
 	}
 }
