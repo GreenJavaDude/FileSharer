@@ -4,9 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.io.File;
 
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-
 import javax.swing.*;
 
 public class GUI extends JFrame{
@@ -45,17 +42,14 @@ public class GUI extends JFrame{
 						choose.remove(selectFile);
 						choose.remove(pathy);
 					}
-					setVisible(true);
 				}else if(selected.equals("Send")){
-					add(BorderLayout.CENTER, start);
-					if(isAncestorOf(start) && file.equals(null)){
+					if(isAncestorOf(start)){
 						remove(start);
 					}
 					if(!choose.isAncestorOf(selectFile)){
 						choose.add(selectFile);
 						choose.add(pathy);
 					}
-					setVisible(true);
 				}else if(selected.equals("Choose to receive or send")){
 					if(isAncestorOf(start)){
 						remove(start);
@@ -64,8 +58,9 @@ public class GUI extends JFrame{
 						choose.remove(selectFile);
 						choose.remove(pathy);
 					}
-					setVisible(true);
 				}
+				
+				setVisible(true);
 			}
 		});
 		
@@ -91,6 +86,7 @@ public class GUI extends JFrame{
 					pathy.setText(file.getAbsolutePath());
 					add(BorderLayout.CENTER, start);
 				}
+				
 				setVisible(true);
 			}
 		});
