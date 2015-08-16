@@ -28,7 +28,6 @@ public class GUI extends JFrame{
 		setSize(500, 300);
 		setLocationRelativeTo(null);
 		
-		
 		fileChooser = new JFileChooser();
 		
 		box = new JComboBox<String>(list);
@@ -59,7 +58,7 @@ public class GUI extends JFrame{
 						choose.remove(pathy);
 					}
 				}
-				
+				repaint();
 				setVisible(true);
 			}
 		});
@@ -67,7 +66,40 @@ public class GUI extends JFrame{
 		start = new JButton("Start");
 		start.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				//start
+				if(choose.isAncestorOf(selectFile)){
+					//send mode
+					String ip = JOptionPane.showInputDialog(null, "Enter the ipv4 of the receiver", "Question", JOptionPane.QUESTION_MESSAGE);
+					uploader = new Uploader(ip, file);
+					uploader.upload();
+					
+					while(!uploader.isFinished()){
+						try{
+							Thread.sleep(10);
+						}catch(Exception ex){
+							
+						}
+					}
+										
+					JOptionPane.showMessageDialog(null, "The file has been uploaded");
+				}else{
+					//receive mode
+					int returnVal = fileChooser.showOpenDialog(GUI.this);
+					
+					if(returnVal == JFileChooser.APPROVE_OPTION){
+						receiver = new Receiver(fileChooser.getSelectedFile());
+						receiver.start();
+						
+						while(!uploader.isFinished()){
+							try{
+								Thread.sleep(10);
+							}catch(Exception ex){
+								
+							}
+						}
+						
+						JOptionPane.showMessageDialog(null, "The file has been downloaded");
+					}
+				}
 			}
 		});
 		
@@ -87,6 +119,7 @@ public class GUI extends JFrame{
 					add(BorderLayout.CENTER, start);
 				}
 				
+				repaint();
 				setVisible(true);
 			}
 		});
